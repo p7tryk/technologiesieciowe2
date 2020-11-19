@@ -1,0 +1,4 @@
+2: enp4s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether b4:2e:99:e4:68:04 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.186/24 brd 192.168.0.255 scope global dynamic noprefixroute enp4s0
+       valid_lft 32301sec preferred_lft 32301sec

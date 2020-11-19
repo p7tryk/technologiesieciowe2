@@ -1,0 +1,213 @@
+#+LANGUAGE: pl
+#+LATEX_HEADER: \renewcommand*{\contentsname}{Spis Treści}
+#+OPTIONS: toc:2
+#+TITLE: Router IP \\
+#+TITLE: Patryk Kaniewski
+#+LATEX_HEADER: \usepackage[margin=3cm]{geometry}
+#+latex_header: \hypersetup{colorlinks=true,linkcolor=blue}
+#+begin_src emacs-lisp :exports results :results none :eval export
+  (make-variable-buffer-local 'org-latex-title-command)
+  (setq org-latex-title-command (concat
+"\\begin{titlepage}\n"
+"\\begin{center}\n"
+"{\\Large Router IP \\par}\n"
+"\\vspace{2cm}\n"
+"{\\Large Patryk Kaniewski \\par\n}"
+"\\vspace{2cm}\n"
+"{\\large 2020-10-22}\n"
+"\\end{center}\n"
+"\\end{titlepage}\n"))
+#+end_src
+
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \graphicspath{ {/home/thisconnect/pwsz/} }
+#+LATEX_HEADER: \pagestyle{fancyplain}
+#+LATEX_HEADER: \chead{Router IP}
+#+LATEX_HEADER: \lhead{\includegraphics{pusb.png}}
+#+LATEX_HEADER: \rhead{}
+#+LATEX_HEADER: \cfoot{}
+#+LATEX_HEADER: \lfoot{}
+#+LATEX_HEADER: \rfoot{Patryk Kaniewski \linebreak GNU GPLv3}
+
+
+* Grupa wykonująca zadanie
++ Patryk Kaniewski
++ Jakub Caban
++ Dominik Gandziarek
+
+* Wstęp
+** Cel ćwiczenia
+Celem ćwiczenia jest pokazanie w jaki sposób NAT (Network Adress Translation) ukrywa strukturę sieci wewnetrznej
+** Schemat ćwiczenia
+[[./schemat.png]]
+** Wymagany sprzęt
++ Router z możliwościa wyłaczenia NAT (np Linksys BEFVP41)
++ 2 Komputery osobiste
++ skrętka komputerowa UTP zakonczona 8PC8 (np. cat5e)
+
+** Plan ćwiczenia
+1. Podłączenie routera i komputerów wg. schematu
+2. Właczenie i zalogowanie sie na router i komputery (może być potrzebne konto administratora)
+3. Badanie zachowania się sieci NAT (np. ping K1<->R1<->K3)
+4. Wyłaczenie sieci NAT na routerze (w BEFVP41 NAT Setup->Advanced Routing->Dynamic Routing->NAT->Disabled)
+5. Ustawienie recznej konfiguracji R1 (zmiana domyślnej bramy na WAN routera)
+
+
+* Ćwiczenie
+** Wstępna konfiguracja
+*** K1
+#+begin_src
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . : pwsz.pk
+   Link-local IPv6 Address . . . . . : fe80::1cb5:9d48:9e1b:f847%11
+   IPv4 Address. . . . . . . . . . . : 172.16.1.80
+   Subnet Mask . . . . . . . . . . . : 255.255.254.0
+   Default Gateway . . . . . . . . . : 172.16.0.1~
+#+end_src
+*** K3
+#+begin_src
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . : pwsz.pk
+   Link-local IPv6 Address . . . . . : fe80::dc70:7154:4ecd:c188%4
+   IPv4 Address. . . . . . . . . . . : 192.168.1.100
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.1.1
+#+end_src
+*** R1
+[[./router_interfejsy.png]]
+** Badanie zachowania NAT
+*** K3 -> K1
+Pingowanie z sieci NAT do sieci zewnętrznej jest normalnym zachowaniem które można zaobserować podczas poprawnego działania wiekszości połaczeń internetowych
+#+begin_src
+Pinging 172.16.1.80 with 32 bytes of data:
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=128
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=128
+Reply from 172.16.1.80: bytes=32 time=3ms TTL=128
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=128
+
+Ping statistics for 172.16.1.80:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 3ms, Average = 2ms
+#+end_src
+Jak widać adresem źrodłowym jest adress zewnętrzny routera IP a nie K3
+[[./K1/przed/k1_pingk3dok1.png]]
+
+*** K1 -> K3
+NAT nie pozwala pingować wewnętrznych zasobów sieciowych
+#+begin_src
+Pinging 192.168.1.100 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.1.100:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+#+end_src
+*** K1-> R2(LAN)
+Jak iż nie widzimy wewnętrznej sieci, pingi na adress wewnętrzny również sa odrzucane
+#+begin_src
+Pinging 192.168.1.1 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+#+end_src
+** Wyłączenie NAT
+Należy wyłaczyć router NAT na routerze.
+Dla Linksys NAT Setup->Advanced Routing->Dynamic Routing->NAT->Disabled.
+*** K1
+Aby umożliwić dwustronna komunikacje musimy ręcznie ustawić interfejs sieciowy na K1.
+
+Należy ustawic bramę domyślna na adres WAN R2 (w naszym przypadku 172.16.1.2).
+#+begin_src
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . : 
+   Link-local IPv6 Address . . . . . : fe80::1cb5:9d48:9e1b:f847%11
+   IPv4 Address. . . . . . . . . . . : 172.16.1.80
+   Subnet Mask . . . . . . . . . . . : 255.255.254.0
+   Default Gateway . . . . . . . . . : 172.16.1.2
+#+end_src
+** Badanie zachowania Routera bez NAT
+*** K3->K1
+Połączenie z sieci wewnętrznej na zewnątrz nadal jest utrzymane.
+#+begin_src
+Pinging 172.16.1.80 with 32 bytes of data:
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=127
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=127
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=127
+Reply from 172.16.1.80: bytes=32 time=2ms TTL=127
+
+Ping statistics for 172.16.1.80:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+#+end_src
+*** K1->K3
+Po wyłączeniu translacji adresów, mamy pełen dostęp do sieci wewnętznej 192.168.1.0/24.
+#+begin_src
+Pinging 192.168.1.100 with 32 bytes of data:
+Reply from 192.168.1.100: bytes=32 time=2ms TTL=127
+Reply from 192.168.1.100: bytes=32 time=2ms TTL=127
+Reply from 192.168.1.100: bytes=32 time=3ms TTL=127
+Reply from 192.168.1.100: bytes=32 time=3ms TTL=127
+
+Ping statistics for 192.168.1.100:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 3ms, Average = 2ms
+#+end_src
+Możemy zaobserwować jawność adresów obydwu maszyn.
+[[./K3/ping_z_K1.png]]
+*** K1->R2
+Po usunięciu blokady na pingi na routerze (patrz [[Napotkane problemy]]). Możemy pingować wszystkie interfejsy routera z sieci wewnętrznej.
+#+begin_src
+Pinging 192.168.1.1 with 32 bytes of data:
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=150
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=150
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=150
+Reply from 192.168.1.1: bytes=32 time=1ms TTL=150
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 1ms, Average = 1ms
+#+end_src
+#+begin_src
+Pinging 172.16.1.2 with 32 bytes of data:
+Reply from 172.16.1.2: bytes=32 time=1ms TTL=150
+Reply from 172.16.1.2: bytes=32 time=1ms TTL=150
+Reply from 172.16.1.2: bytes=32 time=1ms TTL=150
+Reply from 172.16.1.2: bytes=32 time=1ms TTL=150
+
+Ping statistics for 172.16.1.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 1ms, Average = 1ms
+#+end_src
+* Wnioski
+** Działanie NAT
+NAT maskuje wszystkie urządzenia które sie za nim znajdują. Uniemożliwia on pingowanie wewnętrznych zasobów sieciowych.
+Wewnętrzne urządzenia wychodząc na sieci zewnętrzne sa ukrywane (router NAT nadpisuje w pakiecie IP pole source adress).
+** Napotkane problemy
+#+NAME: problem
+Domyślnie router Linksys blokuje zewnętrzne pingi.
+
+Tą opcje można wyłaczyć w Filters-> Block WAN Request
+[[./K3/wylaczenie_opcji_na_routerze_block_wan.png]]
+
+
