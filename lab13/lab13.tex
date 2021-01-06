@@ -1,4 +1,4 @@
-% Created 2021-01-06 śro 11:26
+% Created 2021-01-06 śro 13:15
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -55,58 +55,58 @@ Patryk Kaniewski},
 \tableofcontents \clearpage
 
 \section{Grupa wykonująca zadanie}
-\label{sec:orgce243a4}
+\label{sec:org544e552}
 \begin{itemize}
 \item Patryk Kaniewski
 \end{itemize}
 
 \section{Wstęp}
-\label{sec:orgcb0c0f5}
+\label{sec:orge9246f6}
 \subsection{Cel ćwiczenia}
-\label{sec:orgb2521f9}
+\label{sec:org4a05b4c}
 Wyszukanie ścieżki datagramów w internecie
 \subsection{Schemat ćwiczenia}
-\label{sec:orgd761593}
+\label{sec:org22d4e51}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./schemat.png}
 \end{center}
 \subsection{Wymagany sprzęt}
-\label{sec:org815afa8}
+\label{sec:org63bc0a9}
 \begin{itemize}
 \item Komputer z systemem POSIX
 \end{itemize}
 
 \subsection{Plan ćwiczenia}
-\label{sec:orgfa8b94e}
+\label{sec:orgf12c468}
 \subsubsection{Część 1:}
-\label{sec:org212af84}
+\label{sec:org58ac94e}
 \begin{enumerate}
-\item Wyszukujemy cel
-\item Rejestrujemy ruch ICMP
-\item Znajdujemy droge
+\item Wyszukanie celu
+\item Rejestracja ruchu ICMP
+\item Znalezienie drogi
 \end{enumerate}
 \subsubsection{Część 2:}
-\label{sec:org76964f3}
+\label{sec:orgb3e59e5}
 \begin{enumerate}
 \item Rejestracja ruchu ICMP i DNS
-\item Znajdujemy DNS i reverse DNS
+\item Znalezienie DNS i reverse DNS
 \end{enumerate}
 \subsubsection{Część 3:}
-\label{sec:org89c3bbe}
+\label{sec:org85e9f9a}
 \begin{enumerate}
-\item Znajdujemy droge do dalekiego celu
-\item Czekamy
-\item Znajdujemy droge do dalekiego celu
-\item Porownujemy drogi
+\item Znalezienie drogi do dalekiego celu
+\item Odczekanie ok. 30min
+\item Znalezienie drogi do dalekiego celu
+\item Porównanie dróg
 \end{enumerate}
 
 
 \section{Ćwiczenie}
-\label{sec:orgb9d57ba}
+\label{sec:orge11bf3e}
 \subsection{Przed ćwiczeniem}
-\label{sec:orgbab222e}
+\label{sec:orgbc33336}
 \subsubsection{Konfiguracja wstępna}
-\label{sec:org60f67a6}
+\label{sec:org3092bb9}
 ip a show dev enp4s0
 \begin{verbatim}
 2: enp4s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
@@ -114,13 +114,12 @@ ip a show dev enp4s0
     inet 192.168.0.186/24 brd 192.168.0.255 scope global dynamic noprefixroute enp4s0
        valid_lft 32301sec preferred_lft 32301sec
 \end{verbatim}
-
-Wybieramy cel (w moim przypadku skierniewice.eu)
+Wybranie celu oraz dalekiego celu (w tym ćwiczeniu \texttt{skierniewice.eu} oraz \texttt{theindependent.sg})
 \subsection{Część 1}
-\label{sec:org2129475}
+\label{sec:orgcb6e7aa}
 \subsubsection{Szukanie celu}
-\label{sec:org84cb5af}
-Wykonujemy ping do wybranego przez nas celu (w moim przypadku skierniewice.eu)
+\label{sec:orga172832}
+Wykonujemy ping do naszego celu
 \begin{verbatim}
 PING skierniewice.eu (94.152.194.219) 56(84) bytes of data.
 64 bytes from 10.ires.pl (94.152.194.219): icmp_seq=1 ttl=55 time=6.41 ms
@@ -134,7 +133,7 @@ rtt min/avg/max/mdev = 6.310/6.412/6.492/0.065 ms
 
 \end{verbatim}
 \subsubsection{Rejestracja ruchu ICMP}
-\label{sec:org551b916}
+\label{sec:orga53b5c9}
 Następnie używamy otrzymanego adresu IP do polecenia \texttt{traceroute -n -I 94.152.194.219} (opcja -n wyłącza odwracanie adresów ip na adresy domenowe; opcja -I wymusza używanie icmp echo do badania celow).
 
 
@@ -157,12 +156,12 @@ traceroute to skierniewice.eu (94.152.194.219), 30 hops max, 60 byte packets
 10  94.152.194.219  6.205 ms  6.176 ms  6.286 ms
 \end{verbatim}
 \subsubsection{Wyniki}
-\label{sec:org57f3d6e}
+\label{sec:org04591f3}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./part1/traceroute.png}
 \end{center}
 \begin{itemize}
-\item Na różowo zaznaczone są Echo Requst
+\item Na różowo zaznaczone są Echo Request
 \item Na czarno zaznaczone sa TTL exceeded
 \item Na niebiesko zaznaczone sa Echo Reply
 \end{itemize}
@@ -173,9 +172,9 @@ Nasza scieżka wyglada następująco:
 \end{center}
 
 \subsection{Część 2}
-\label{sec:org03fdbfe}
+\label{sec:org34cd84e}
 \subsubsection{Rejestracja ICMP i DNS}
-\label{sec:org34c80ad}
+\label{sec:orgdbc4dd2}
 W częsci drugie nieco zmieniamy nasze polecenie \texttt{traceroute -I skierniewice.eu} (opcja -I wymusza używanie icmp echo do badania celow).
 
 Bez opcji -d, traceroute bedzie probował znaleść poprzez reverse DNS lookup adresy domenowe zwiazane z adresami ip.
@@ -198,7 +197,7 @@ traceroute to skierniewice.eu (94.152.194.219), 30 hops max, 60 byte packets
 10  10.ires.pl (94.152.194.219)  6.568 ms  6.598 ms  6.619 ms
 \end{verbatim}
 \subsubsection{Wyniki}
-\label{sec:org59eb545}
+\label{sec:org4634d97}
 Aby ułatwić analizę packetdump możemy uzyć w wireshark display filter \texttt{icmp or dns}.
 \begin{center}
 \includegraphics[width=.9\linewidth]{./part2/dnsA.png}
@@ -230,12 +229,12 @@ skierniewice.eu.        3599    IN      A
 219.194.152.94.in-addr.arpa. 3600 IN    PTR     10.ires.pl.
 \end{verbatim}
 \subsection{Część 3}
-\label{sec:orgfbecfdd}
+\label{sec:org292094d}
 \subsubsection{Odległy cel}
-\label{sec:org7a9e4e6}
+\label{sec:org8213922}
 Znalezienie odległego celu w dzisiejszych czasach może okazać sie problemem ze wzgledu na powszechność usług takich jak cloudflare, aws oferujacych wszelakie usługi proxy/cache.
 
-Wybralem cel \texttt{theindependent.sg} znajdujący sie w azji południowo-wschodniej:
+Wybrano cel \texttt{theindependent.sg} znajdujący sie w azji południowo-wschodniej:
 \begin{verbatim}
 PING theindependent.sg (34.87.85.150) 56(84) bytes of data.
 64 bytes from 150.85.87.34.bc.googleusercontent.com (34.87.85.150): icmp_seq=1 ttl=60 time=265 ms
@@ -248,7 +247,7 @@ PING theindependent.sg (34.87.85.150) 56(84) bytes of data.
 rtt min/avg/max/mdev = 265.312/265.624/266.329/0.410 ms
 \end{verbatim}
 
-Traceroute o godzinie 11:01
+Traceroute o godzinie 18:01.
 \begin{verbatim}
 traceroute to theindependent.sg (34.87.85.150), 30 hops max, 60 byte packets
  1  192.168.0.1  0.249 ms  0.352 ms  0.453 ms
@@ -274,21 +273,108 @@ traceroute to theindependent.sg (34.87.85.150), 30 hops max, 60 byte packets
 21  34.87.85.150  265.372 ms  265.358 ms  265.202 ms
 \end{verbatim}
 
-\subsubsection{Ponowienie szukania drogi}
-\label{sec:orgd4374dc}
+\subsubsection{Ponowne szukanie drogi}
+\label{sec:org43b1d4b}
+Traceroute o godzinie 18:54.
+\begin{verbatim}
+traceroute to theindependent.sg (34.87.85.150), 30 hops max, 60 byte packets
+ 1  192.168.0.1  0.461 ms  0.415 ms  0.412 ms
+ 2  91.214.0.129  1.581 ms  1.587 ms  1.641 ms
+ 3  * * *
+ 4  94.246.185.48  2.100 ms  2.185 ms  2.193 ms
+ 5  195.149.233.101  2.670 ms  2.986 ms  2.674 ms
+ 6  188.47.253.245  3.412 ms  3.264 ms  3.483 ms
+ 7  108.170.248.195  265.707 ms 108.170.248.170  262.333 ms *
+ 8  108.170.248.203  263.531 ms 108.170.248.187  262.628 ms 108.170.248.171  261.930 ms
+ 9  108.170.229.13  264.222 ms 216.239.54.183  265.975 ms 108.170.225.191  269.693 ms
+10  74.125.253.62  266.636 ms 74.125.37.250  260.637 ms 74.125.253.62  266.337 ms
+11  66.249.95.195  265.662 ms 209.85.246.15  266.652 ms 66.249.95.195  265.467 ms
+12  * * *
+13  * * *
+14  * * *
+15  * * *
+16  * * *
+17  * * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  * * *
+24  * * *
+25  * * *
+26  * * *
+27  * * *
+28  * * *
+29  * * *
+30  * * *
+\end{verbatim}
 \subsubsection{Różnice w drodze}
-\label{sec:orge16e29b}
-Aby porownać różnice odrzuciłem pingi z traceroute za pomoca polecenia \texttt{awk '\{print \$1 "\textbackslash{}t" \$2\}' traceroute1.txt > trace1.txt} a następnie polecenia \texttt{diff} aby porównać te pliki
+\label{sec:orgdc0a00e}
+Aby porownać różnice można odrzucić pingi z traceroute za pomoca polecenia \texttt{awk '\{print \$1 "\textbackslash{}t" \$2\}' traceroute1.txt > trace1.txt} a następnie polecenia \texttt{diff} aby porównać te pliki.
+\begin{verbatim}
+4c4
+< 3     91.214.0.1
+---
+> 3     *
+8,12c8,12
+< 7     108.170.248.170
+< 8     108.170.248.194
+< 9     108.170.225.145
+< 10    72.14.233.235
+< 11    172.253.68.225
+---
+> 7     108.170.248.195
+> 8     108.170.248.203
+> 9     108.170.229.13
+> 10    74.125.253.62
+> 11    66.249.95.195
+\end{verbatim}
+Widzimy dosyć duże zmiany w drodze(skok 7-11) oraz zmiane bramy u dostawcy internetu (skok 3 - timplus)
+
+
 
 
 \section{Wnioski}
-\label{sec:orgf6a5a47}
+\label{sec:org3002bd9}
+\subsection{Traceroute}
+\label{sec:org25777b8}
+Traceroute używa mechanizmu IP wartości TTL(czerwone) która jest obniżana za każdym razem kiedy pakiet jest przekierowany przez router. Router który obniża wartość TTL do 0, wysyła do source adress(niebieskie)  komunikat Time-to-live exceeeded in transit, za którego pomocą możemy poznać który router z jakim IP jest na skoku równym wysłanej wartości TTL.
+\begin{center}
+\includegraphics[width=.9\linewidth]{./ip_header.jpg}
+\end{center}
+
+\subsection{DNS}
+\label{sec:orga89b315}
+DNS jest systemem zamiany nazwy domen(przystępne dla człowieka) na adresy IP (używane w pakietach wysyłanych po sieci) oraz odwrotnie.
+Zapytanie A zamienia domenę na adres IP, a zapytanie PTR zamienia adres IP na nazwę domeny. Zauważalne również była niezgodność w jednym przypadku pomiędzy zapytaniem odwrotnym a oryginalna nazwa domeny. Jest to spowodowane że jednostka odpowiedzialna za strefę .in-addr.arpa (w konketnym przypadku \texttt{10.ires.pl} (\url{https://www.ideo.pl/}) którzy tworzą i hostuja serwisy internetowe z ktorch \texttt{skierniewice.eu} korzysta) mogą być inne od tych ktorzy posiadają domenę (w konkretnym przypadku \texttt{skierniewice.eu})
+
 \subsection{Routing}
-\label{sec:org28ab8b1}
+\label{sec:org2c450e2}
+W tym ćwiczeniu mogliśmy zaobserować mechanizm routingu dynamicznego. W części 3 zobaczyliśmy ze droga do naszego celu \texttt{theindependent.sg} została zmieniona w połowie. Bez dostępu do routerów nie możemy poznać przyczyny ale jest kilka najczęstszych przyczyn zmiany routingu:
+\begin{itemize}
+\item router na drodze miał awarie
+\item została znaleziona szybsza droga (opóźnienie)
+\item została znaleziona drożniejsza droga (przepustowość)
+\end{itemize}
+
+Najcześciej używanymi systemami routingu dynamicznego sa dla bram wewnetrznych(wewnątrz systemów autonomicznych np. sieć dostawcy internetu, firma):
+\begin{itemize}
+\item RIP - proste rozwiązanie na podstawie ilości skoków od x do y
+\end{itemize}
+\begin{itemize}
+\item OSPF - złożone rozwiązanie oparte na stanie łącza (najczęsciej wiekszy priorytet dla połaczeń z wiekszą przepustowością)
+\end{itemize}
+Oraz dla bram zewnętrznych(połączenia pomiedzy systemami autonomicznymi np. pomiedzy dostawcami internetu, krajami, kontynentami):
+\begin{itemize}
+\item EGP
+\item BGP
+\end{itemize}
+
 \subsection{Napotkane problemy}
-\label{sec:org7795f32}
+\label{sec:org5bc164b}
 \subsubsection{traceroute -I}
-\label{sec:org935efc4}
+\label{sec:org78b39fb}
 traceroute na systemie na ktorym przeprowadzane jest ćwiczenie (Archlinux) domyślnie nie używa ICMP echo (ping) do przeszukiwania drogi ze wzgledu na to że w dużej ilości sieci pakiety ICMP sa filtrowane
 \begin{center}
 \includegraphics[width=.9\linewidth]{./problemy/problem1.png}
