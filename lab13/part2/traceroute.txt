@@ -1,0 +1,11 @@
+traceroute to skierniewice.eu (94.152.194.219), 30 hops max, 60 byte packets
+ 1  _gateway (192.168.0.1)  0.247 ms  0.313 ms  0.481 ms
+ 2  91-214-0-129.timplus.net (91.214.0.129)  1.387 ms  1.379 ms  1.415 ms
+ 3  main-gw.timplus.net (91.214.0.1)  1.469 ms  1.490 ms  1.505 ms
+ 4  48.polmix2.epix.net.pl (94.246.185.48)  2.370 ms  2.397 ms  2.389 ms
+ 5  oxylion.tpix.pl (195.149.232.222)  2.654 ms  2.714 ms  2.739 ms
+ 6  185.80.215.238 (185.80.215.238)  7.172 ms  6.814 ms  6.805 ms
+ 7  5E98C9F2.static.tld.pl (94.152.201.242)  23.860 ms  21.250 ms  21.252 ms
+ 8  5E98C9DE.static.tld.pl (94.152.201.222)  25.080 ms  25.089 ms  25.100 ms
+ 9  5E98C99B.static.tld.pl (94.152.201.155)  14.678 ms  14.714 ms  14.730 ms
+10  10.ires.pl (94.152.194.219)  6.568 ms  6.598 ms  6.619 ms
